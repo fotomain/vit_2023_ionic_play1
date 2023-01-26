@@ -199,7 +199,7 @@ const Home: React.FC = () => {
 
                           <div
                             style={{
-                                // height:'40px', width:'100px',
+                                //  height:'40px', width:'100px',
                                 backgroundColor:'yellow',
                             // 222
                             marginTop:'-10%',
