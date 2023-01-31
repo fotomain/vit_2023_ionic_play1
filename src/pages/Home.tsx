@@ -42,6 +42,7 @@ const Home: React.FC = () => {
     fontSize?:string,
     paddingLeft?:string,
     marginLeft?:string,
+    marginBottom?:string,
   }
 
 
@@ -65,11 +66,20 @@ const Home: React.FC = () => {
       {marginTop: '45%', left: '65%'   , fontSize: '25px'},
   ]
 
+  // const text_xy_design30 : Text_xy_type[] =[
+  //     // 000 UP
+  //     {marginTop: '80%', left: '5%'    , fontSize: '15px'},
+  //     // 111 MAIN
+  //     {marginTop: '50%', left: '5%'   , fontSize: '25px'},
+  //     // 222
+  //     {marginTop: '80%', left: '75%'   , fontSize: '15px'},
+  // ]
+  //
   const text_xy_design3 : Text_xy_type[] =[
       // 000 UP
       {marginTop: '80%', left: '5%'    , fontSize: '15px'},
       // 111 MAIN
-      {marginTop: '50%', left: '5%'   , fontSize: '25px'},
+      {marginBottom: '-200px', left: '5%'   , fontSize: '25px'},
       // 222
       {marginTop: '80%', left: '75%'   , fontSize: '15px'},
   ]
@@ -391,7 +401,7 @@ const Home: React.FC = () => {
               />
 
             </FormGroup>
-            <FormHelperText>Be careful</FormHelperText>
+            <FormHelperText>Be careful {design_number}</FormHelperText>
           </FormControl>
 
         </div>
