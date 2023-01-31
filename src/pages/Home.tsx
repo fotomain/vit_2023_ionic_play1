@@ -4,7 +4,7 @@ import MessageListItem from '../components/MessageListItem';
 // import MyVideo from "../../src/pages/video1.mp4"
 
 
-import {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import { Message, getMessages } from '../data/messages';
 import {
   IonContent, IonGrid,
@@ -25,6 +25,10 @@ import {Autoplay, Navigation, Pagination} from "swiper";
 
 import "swiper/swiper-bundle.css";
 
+import QRCode from "react-qr-code";
+
+import Radio from '@mui/material/Radio';
+import {Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Switch} from "@mui/material";
 
 
 const Home: React.FC = () => {
@@ -56,25 +60,47 @@ const Home: React.FC = () => {
       // 000 UP
       {top: '45%', right: '20px' , fontSize: '25px'},
       // 111 MAIN
-      {marginTop: '70%', left: '5%'    , fontSize: '30px'},
+      {marginTop: '45%', left: '5%'    , fontSize: '30px'},
       // 222
-      {marginTop: '65%', left: '65%'   , fontSize: '25px'},
+      {marginTop: '45%', left: '65%'   , fontSize: '25px'},
   ]
 
   const text_xy_design3 : Text_xy_type[] =[
       // 000 UP
-      {marginTop: '50%', left: '45%'   , fontSize: '15px'},
-      // 111 MAIN
       {marginTop: '80%', left: '5%'    , fontSize: '15px'},
+      // 111 MAIN
+      {marginTop: '50%', left: '5%'   , fontSize: '25px'},
       // 222
       {marginTop: '80%', left: '75%'   , fontSize: '15px'},
   ]
 
 
-  const [design_number, set_design_number] = useState<number>(1);
+  //=== cccccccccccc
+  const [design_number, set_design_number] = useState<number>(3);
   const [text_xy, set_text_xy] = useState(text_xy_design1);
 
   const [messages, setMessages] = useState<Message[]>([]);
+
+  const [state, setState] = React.useState({
+    slides_mirrored: true,
+    slides_show_numbers: true,
+    slides_show_speed_not_zero: false,
+    min_speed_to_show_slides:0.5,
+  });
+
+
+  function handleChange(event:any) {
+
+    console.log("=== handleChange",event.target.value)
+    const value = event.target.value;
+    setState({
+      ...state,
+      [event.target.name]: event.target.checked,
+    });
+
+
+  }
+
 
   useIonViewWillEnter(() => {
     const msgs = getMessages();
@@ -285,7 +311,7 @@ const Home: React.FC = () => {
                                 alignItems:'center',
                             }}}
                           >
-                            {card.title2}
+                            {(design_number==3)?(card.title2+' '+card.title1):card.title2}
                           </div>
 
                                   <div
@@ -314,6 +340,9 @@ const Home: React.FC = () => {
                                   >
                                     {card.title3}
                                   </div>
+
+                    <QRCode size={40} value="http://facebook.github.io/react/"/>
+
                   </div>
                 </SwiperSlide>
             )
@@ -336,6 +365,37 @@ const Home: React.FC = () => {
             }
           }}>PRESS</button>
         </div>
+
+        <div>
+          <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
+          <FormControl component="fieldset" variant="standard">
+            <FormLabel component="legend">Slides Show modes</FormLabel>
+            <FormGroup>
+              <FormControlLabel
+                  control={
+                    <Switch checked={state.slides_mirrored} onChange={handleChange} name="slides_mirrored" />
+                  }
+                  label="Show mirrored"
+              />
+              <FormControlLabel
+                  control={
+                    <Switch checked={state.slides_show_numbers} onChange={handleChange} name="slides_show_numbers" />
+                  }
+                  label="Show slide number"
+              />
+              <FormControlLabel
+                  control={
+                    <Switch checked={state.slides_show_speed_not_zero} onChange={handleChange} name="slides_show_speed_not_zero" />
+                  }
+                  label={"Show when speed > "+state.min_speed_to_show_slides+"m/s"}
+              />
+
+            </FormGroup>
+            <FormHelperText>Be careful</FormHelperText>
+          </FormControl>
+
+        </div>
+
 
       </div>
 

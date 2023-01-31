@@ -33,6 +33,7 @@ import '@ionic/react/css/display.css';
 import './theme/variables.css';
 import Page2 from "./pages/Page2";
 
+
 setupIonicReact();
 
 const App: React.FC = () => (
