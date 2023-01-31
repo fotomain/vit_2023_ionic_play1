@@ -10,14 +10,6 @@ import MessageListItem from '../components/MessageListItem';
 import React, {useEffect, useRef, useState} from 'react';
 import { Message, getMessages } from '../data/messages';
 import {
-  IonContent, IonGrid,
-  IonHeader,
-  IonList,
-  IonPage,
-  IonRefresher,
-  IonRefresherContent, IonRow,
-  IonTitle,
-  IonToolbar,
   useIonViewWillEnter
 } from '@ionic/react';
 import './Home.css';
