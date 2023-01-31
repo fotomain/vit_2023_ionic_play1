@@ -177,11 +177,13 @@ const Home: React.FC = () => {
   ]
 
   const navigationNextRef = useRef() as any
-
+  const style_mirrored = (!state.slides_mirrored)?'':{
+    WebkitTransform:'matrix(-1, 0, 0, 1, 0, 0)'
+  }
 
   return (
-
-      <div>
+      <>
+      <div style={{...style_mirrored}} >
         <Swiper
             ref={navigationNextRef}
             style={{marginTop:'1px', height:'300px'}}
@@ -259,7 +261,8 @@ const Home: React.FC = () => {
                       Your browser does not support the video tag.
                     </video>
 
-
+                    {/*=========== TEXTS*/}
+                    {/*<div style={{WebkitTransform:'matrix(-1, 0, 0, 1, 0, 0)'}}>*/}
                     <div
                         style={{...text_xy[0],...{
                             // height:'40px', width:'100px',
@@ -350,10 +353,13 @@ const Home: React.FC = () => {
                                   >
                                     {card.title3}
                                   </div>
+                    {/*</div>*/}
+                    {/*TEXTS*/}
 
                     <QRCode size={40} value="http://facebook.github.io/react/"/>
 
-                  </div>
+                  </div> {/*  TEXTS*/}
+
                 </SwiperSlide>
             )
           })}
@@ -376,40 +382,40 @@ const Home: React.FC = () => {
           }}>PRESS</button>
         </div>
 
-        <div>
-          <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
-          <FormControl component="fieldset" variant="standard">
-            <FormLabel component="legend">Slides Show modes</FormLabel>
-            <FormGroup>
-              <FormControlLabel
-                  control={
-                    <Switch checked={state.slides_mirrored} onChange={handleChange} name="slides_mirrored" />
-                  }
-                  label="Show mirrored"
-              />
-              <FormControlLabel
-                  control={
-                    <Switch checked={state.slides_show_numbers} onChange={handleChange} name="slides_show_numbers" />
-                  }
-                  label="Show slide number"
-              />
-              <FormControlLabel
-                  control={
-                    <Switch checked={state.slides_show_speed_not_zero} onChange={handleChange} name="slides_show_speed_not_zero" />
-                  }
-                  label={"Show when speed > "+state.min_speed_to_show_slides+"m/s"}
-              />
-
-            </FormGroup>
-            <FormHelperText>Be careful {design_number}</FormHelperText>
-          </FormControl>
-
-        </div>
-
-
       </div>
 
-  );
+  <div>
+    <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
+    <FormControl component="fieldset" variant="standard">
+      <FormLabel component="legend">Slides Show modes</FormLabel>
+      <FormGroup>
+        <FormControlLabel
+            control={
+              <Switch checked={state.slides_mirrored} onChange={handleChange} name="slides_mirrored" />
+            }
+            label="Show mirrored"
+        />
+        <FormControlLabel
+            control={
+              <Switch checked={state.slides_show_numbers} onChange={handleChange} name="slides_show_numbers" />
+            }
+            label="Show slide number"
+        />
+        <FormControlLabel
+            control={
+              <Switch checked={state.slides_show_speed_not_zero} onChange={handleChange} name="slides_show_speed_not_zero" />
+            }
+            label={"Show when speed > "+state.min_speed_to_show_slides+"m/s"}
+        />
+
+      </FormGroup>
+      <FormHelperText>Be careful {design_number}</FormHelperText>
+    </FormControl>
+
+  </div>
+</>
+
+);
 };
 
 export default Home;
