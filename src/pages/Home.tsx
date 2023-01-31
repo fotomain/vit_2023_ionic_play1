@@ -1,4 +1,7 @@
 
+
+
+
 import MessageListItem from '../components/MessageListItem';
 
 // import MyVideo from "../../src/pages/video1.mp4"
@@ -28,7 +31,16 @@ import "swiper/swiper-bundle.css";
 import QRCode from "react-qr-code";
 
 import Radio from '@mui/material/Radio';
-import {Divider, FormControl, FormControlLabel, FormGroup, FormHelperText, FormLabel, Switch} from "@mui/material";
+import {
+    Button,
+    Divider,
+    FormControl,
+    FormControlLabel,
+    FormGroup,
+    FormHelperText,
+    FormLabel,
+    Switch, TextField
+} from "@mui/material";
 
 
 const Home: React.FC = () => {
@@ -86,20 +98,22 @@ const Home: React.FC = () => {
 
 
   //=== cccccccccccc
+  // const [text_input_value1, set_text_input_value1] = useState<string>('NEW_');
   const [design_number, set_design_number] = useState<number>(3);
   const [text_xy, set_text_xy] = useState(text_xy_design1);
 
   const [messages, setMessages] = useState<Message[]>([]);
 
   const [state, setState] = React.useState({
-    slides_mirrored: true,
-    slides_show_numbers: true,
-    slides_show_speed_not_zero: false,
-    min_speed_to_show_slides:0.5,
+        slides_mirrored: true,
+        slides_show_numbers: true,
+        slides_show_speed_not_zero: false,
+        min_speed_to_show_slides:0.5,
+        text_input_value1:'NEW_'
   });
 
 
-  function handleChange(event:any) {
+  function  handleChange(event:any) {
 
     console.log("=== handleChange",event.target.value)
     const value = event.target.value;
@@ -146,13 +160,14 @@ const Home: React.FC = () => {
         navigationNextRef?.current?.swiper?.slideNext();
       }
 
-    },2*1000);
+    },5*1000);
     return () => clearInterval(interval);
   }, []);
 
 
-  const data = [
-    {
+
+  const [slides_data_array, set_slides_data_array] = useState([
+  {
       title1:'blakus 500 m',
       title2:'RIMI vienmer',
       title3:'atlaide 30%',
@@ -175,15 +190,120 @@ const Home: React.FC = () => {
 
     },
   ]
+  );
 
   const navigationNextRef = useRef() as any
   const style_mirrored = (!state.slides_mirrored)?'':{
     WebkitTransform:'matrix(-1, 0, 0, 1, 0, 0)'
   }
 
+  //========== fffffffffff
+
+    const update_fetch = async (t_params?:any) => {
+
+        const form = new FormData();
+        form.append('app_token', "165a16f84351861f#@$%&^$%$!@d681fds165189");
+
+        var ii;
+        for (ii=0; ii<t_params.length; ii++) {
+            // form.append(par[ii].key, par[ii].value);
+            console.log("================================ ")
+            console.log(t_params[ii][0])
+            console.log(t_params[ii][1])
+            form.append(t_params[ii][0],t_params[ii][1])
+        }
+
+
+        fetch('http://site33.komuvsenado.com/myphp/page_update.php?p1=2',
+            {method: "POST", body: form}
+        ).then(res => res.text())
+            .then(text => {
+                console.log("=== UpdsateSelf OK!")
+                console.log(text)
+            })
+            .catch(text => {
+                console.log("=== UpdsateSelf error")
+                console.log(text)
+            });
+    }
+
+  const doDataSelect = async (event?:any) => {
+
+    console.log("=== doDataSelect")
+    const p_whatToSelect='cat_project_task_actions'
+    const form = new FormData();
+    form.append('app_token', "165a16f84351861f#@$%&^$%$!@d681fds165189");
+    form.append('p_whatToSelect', p_whatToSelect );
+
+    await fetch('http://site33.komuvsenado.com/myphp/page_select.php?p1=2',
+        { method: "POST", body:form }
+    ).then(res => res.text())
+        .then(text => {
+          console.log("=== fetch page_select OK!")
+          // console.log(text)
+
+          console.log(typeof text)
+          var response_arr = JSON.parse(text)
+          console.log(response_arr['rows'])
+
+          const rows = response_arr['rows']
+          // rows.length
+          const new_data=[]
+
+          for (var i = 0; i < 3; i++){
+            console.log('========= row ',i)
+            console.log(rows[i].text1)
+            console.log(rows[i].text2)
+            console.log(rows[i].text3)
+            new_data.push(
+                {
+                  title1: rows[i].text1,
+                  title2: rows[i].text2,
+                  title3: rows[i].text3,
+                  video: slides_data_array[i].video,
+                }
+            )
+
+            set_slides_data_array(new_data)
+
+
+          }
+
+          // set_textsArray(response_arr['rows'])
+          //
+          // const rows = response_arr['rows']
+          // var t_rows_on_screen=[,];
+          // for (var i = 0; i < rows.length; i++){
+          //   t_rows_on_screen["'"+rows.project_task_action_guid+"'",'text1'] = rows[i].text1
+          //   t_rows_on_screen["'"+rows.project_task_action_guid+"'",'text2'] = rows[i].text2
+          //   t_rows_on_screen["'"+rows.project_task_action_guid+"'",'text3'] = rows[i].text3
+          // }
+          // set_Rows_on_screen(t_rows_on_screen)
+
+        })
+        .catch(text => {
+          console.log("=== SelectSelf error")
+          console.log(text)
+        });
+
+  }
+
+    const [needToSelectData,set_needToSelectData] = useState('')
+  useEffect( ()=>{
+
+    const timer = setTimeout(()=>{
+      console.log('=== needToSelectData', needToSelectData)
+      doDataSelect()
+      set_needToSelectData(Date.now().toString())
+    },5000)
+
+    return ()=>clearTimeout( timer )
+
+  },[needToSelectData])
+
   return (
       <>
-      <div style={{...style_mirrored}} >
+      <div>
         <Swiper
             ref={navigationNextRef}
             style={{marginTop:'1px', height:'300px'}}
@@ -194,10 +314,10 @@ const Home: React.FC = () => {
 
             spaceBetween={30}
             // centeredSlides={true}
-            autoplay={{
-              delay: 1000,
-              // disableOnInteraction: false,
-            }}
+            // autoplay={{
+            //   delay: 1000,
+            //   disableOnInteraction: false,
+            // }}
 
             loop
 
@@ -208,7 +328,7 @@ const Home: React.FC = () => {
             modules={[Autoplay, Pagination, Navigation]}
             // className="mySwiper"
         >
-          {data.map((card,index)=>{
+          {slides_data_array.map((card,index)=>{
             return(
                 <SwiperSlide key={`slide${index} `}>
                   {/*<video width="250" height="200" controls >*/}
@@ -264,7 +384,7 @@ const Home: React.FC = () => {
                     {/*=========== TEXTS*/}
                     {/*<div style={{WebkitTransform:'matrix(-1, 0, 0, 1, 0, 0)'}}>*/}
                     <div
-                        style={{...text_xy[0],...{
+                        style={{...style_mirrored,...text_xy[0],...{
                             // height:'40px', width:'100px',
                             backgroundColor:'yellow',
                             // 000
@@ -300,7 +420,7 @@ const Home: React.FC = () => {
                     </div>
 
                           <div
-                              style={{...text_xy[1],...{
+                              style={{...style_mirrored,...text_xy[1],...{
                                 //  height:'40px', width:'100px',
                                 backgroundColor:'yellow',
                             // 111
@@ -324,12 +444,12 @@ const Home: React.FC = () => {
                                 alignItems:'center',
                             }}}
                           >
-                            {(design_number==3)?(card.title2+' '+card.title1):card.title2}
+                            {(design_number==3)?(card.title2+' '+card.title1+' '+card.title3):card.title2}
                           </div>
 
                                   <div
                                       // 222
-                                      style={{...text_xy[2],...{
+                                      style={{...style_mirrored,...text_xy[2],...{
                                           // height:'40px', width:'100px',
                                           backgroundColor:'yellow',
 
@@ -356,7 +476,10 @@ const Home: React.FC = () => {
                     {/*</div>*/}
                     {/*TEXTS*/}
 
+
+
                     <QRCode size={40} value="http://facebook.github.io/react/"/>
+
 
                   </div> {/*  TEXTS*/}
 
@@ -375,44 +498,165 @@ const Home: React.FC = () => {
         </Swiper>
 
         <div>
-          <button onClick={()=>{
-            if(navigationNextRef) {
-              navigationNextRef?.current?.swiper?.slideNext();
-            }
-          }}>PRESS</button>
+
+
+
+
+          <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
+          <Button
+              variant="contained"
+                  onClick={(e)=>{
+                    const t_params=[]
+
+                    t_params.push(['p_dd_table_name', "cat_project_task_actions"])
+                    t_params.push(['p_dd_guid_field_name',"project_task_action_guid"])
+                    t_params.push(['p_dd_from_where_take_value',"take_value_from_value"])
+                    t_params.push(['p_dd_table_field_value_type',"text"])
+
+                          t_params.push(['p_dd_guid_field_value', "33368308-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text1"])
+                          t_params.push(['p_dd_table_field_value', state.text_input_value1 + slides_data_array[1].title1])
+
+                          update_fetch(t_params)
+
+                          t_params.push(['p_dd_guid_field_value', "33368308-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text2"])
+                          t_params.push(['p_dd_table_field_value', state.text_input_value1 + slides_data_array[1].title2])
+
+                          update_fetch(t_params)
+
+                          t_params.push(['p_dd_guid_field_value', "33368308-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text3"])
+                          t_params.push(['p_dd_table_field_value', state.text_input_value1 + slides_data_array[1].title3])
+
+                          update_fetch(t_params)
+
+                          t_params.push(['p_dd_guid_field_value', "2e35abb6-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text1"])
+                          t_params.push(['p_dd_table_field_value', slides_data_array[0].title1])
+
+                          update_fetch(t_params)
+
+                          t_params.push(['p_dd_guid_field_value', "2e35abb6-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text2"])
+                          t_params.push(['p_dd_table_field_value', slides_data_array[0].title2])
+
+                          update_fetch(t_params)
+
+                          t_params.push(['p_dd_guid_field_value', "2e35abb6-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text3"])
+                          t_params.push(['p_dd_table_field_value', slides_data_array[0].title3])
+
+                          update_fetch(t_params)
+
+
+
+
+
+                          t_params.push(['p_dd_guid_field_value', "4157c3db-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text1"])
+                          t_params.push(['p_dd_table_field_value', slides_data_array[2].title1])
+
+                          update_fetch(t_params)
+
+                          t_params.push(['p_dd_guid_field_value', "4157c3db-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text2"])
+                          t_params.push(['p_dd_table_field_value', slides_data_array[2].title2])
+
+                          update_fetch(t_params)
+
+                          t_params.push(['p_dd_guid_field_value', "4157c3db-4955-11"])
+                          t_params.push(['p_dd_table_field_name', "text3"])
+                          t_params.push(['p_dd_table_field_value', slides_data_array[2].title3])
+
+                          update_fetch(t_params)
+
+                  }}
+          >Update 1</Button>
+
+
+            <div>
+                <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
+                <TextField
+                    id="id_html1_1"
+                    // ref={ref1_1}
+                    label={"enter Text1 - it changes online"}
+                    // label={momentData.text1_1?momentData.text1_1:"enter Text1 - it changes online"}
+                    variant="outlined"
+
+                    // InputLabelProps={{ shrink: true  }}
+                    // InputLabelProps={{ shrink: null!=ref1.value?.toString() }}
+                    // inputProps={dd_data['text1_1']} //.push({row_index:999})
+                    // inputProps={action_text1_1_dd_data} //.push({row_index:999})
+                    //=== inputProps={{ step222: 300, step333: 333,  }}
+                    //=== inputProps={{
+                    //     mask:  [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]
+                    // }} // ''==inputValue.toString()
+                    // value = {(''!=inputValue1_1.toString())?inputValue1_1.target.value:''}
+                    //=== see use [inputValue]
+                    // onChange={(event) =>set_inputValue1_1(event)}
+                    name={'text_input_value1'}
+                    // value = {Rows_on_screen['2e35abb6-4955-11','text1']}
+                    // defaultValue = {Rows_on_screen['2e35abb6-4955-11','text1']}
+                    value = {state.text_input_value1}
+                    onChange={(event)=>{
+
+                        setState({
+                            ...state,
+                            [event.target.name]: event.target.value,
+                        });
+                        }
+                    }
+                    // onChange={onChange1}
+                />
+            </div>
+
+
         </div>
 
       </div>
 
-  <div>
-    <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
-    <FormControl component="fieldset" variant="standard">
-      <FormLabel component="legend">Slides Show modes</FormLabel>
-      <FormGroup>
-        <FormControlLabel
-            control={
-              <Switch checked={state.slides_mirrored} onChange={handleChange} name="slides_mirrored" />
-            }
-            label="Show mirrored"
-        />
-        <FormControlLabel
-            control={
-              <Switch checked={state.slides_show_numbers} onChange={handleChange} name="slides_show_numbers" />
-            }
-            label="Show slide number"
-        />
-        <FormControlLabel
-            control={
-              <Switch checked={state.slides_show_speed_not_zero} onChange={handleChange} name="slides_show_speed_not_zero" />
-            }
-            label={"Show when speed > "+state.min_speed_to_show_slides+"m/s"}
-        />
+                <div>
+                  <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
+                  <FormControl component="fieldset" variant="standard">
+                    <FormLabel component="legend">Slides Show modes</FormLabel>
+                    <FormGroup>
+                      <FormControlLabel
+                          control={
+                            <Switch checked={state.slides_mirrored} onChange={handleChange} name="slides_mirrored" />
+                          }
+                          label="Show mirrored"
+                      />
+                      <FormControlLabel
+                          control={
+                            <Switch checked={state.slides_show_numbers} onChange={handleChange} name="slides_show_numbers" />
+                          }
+                          label="Show slide number"
+                      />
+                      <FormControlLabel
+                          control={
+                            <Switch checked={state.slides_show_speed_not_zero} onChange={handleChange} name="slides_show_speed_not_zero" />
+                          }
+                          label={"Show when speed > "+state.min_speed_to_show_slides+"m/s"}
+                      />
 
-      </FormGroup>
-      <FormHelperText>Be careful {design_number}</FormHelperText>
-    </FormControl>
+                    </FormGroup>
+                    <FormHelperText>Be careful {design_number}</FormHelperText>
+                  </FormControl>
 
-  </div>
+                </div>
+
+        <Divider style={{marginTop:'10px', marginBottom:'10px'}}/>
+        <Button
+            variant="contained"
+            onClick={()=>{
+              if(navigationNextRef) {
+                navigationNextRef?.current?.swiper?.slideNext();
+              }
+            }}
+        >
+          Next Slide
+        </Button>
 </>
 
 );
